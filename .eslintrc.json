@@ -1,5 +1,5 @@
 {
     "extends" : [
-        "@rockeatseat/eslint-config/react"
+        "@rocketseat/eslint-config/react"
     ]
 }
