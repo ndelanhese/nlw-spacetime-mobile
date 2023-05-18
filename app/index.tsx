@@ -7,13 +7,14 @@ import {
 } from '@expo-google-fonts/roboto'
 import { BaiJamjuree_700Bold } from '@expo-google-fonts/bai-jamjuree'
 import React, { useEffect } from 'react'
-import blurBg from './src/assets/bg-blur.png'
-import Stripes from './src/assets/stripes.svg'
-import NlwLogo from './src/assets/nlw-spacetime-logo.svg'
+import blurBg from '../src/assets/bg-blur.png'
+import Stripes from '../src/assets/stripes.svg'
+import NlwLogo from '../src/assets/nlw-spacetime-logo.svg'
 import { styled } from 'nativewind'
 import { makeRedirectUri, useAuthRequest } from 'expo-auth-session'
-import { api } from './src/lib/api'
+import { api } from '../src/lib/api'
 import * as SecureStore from 'expo-secure-store'
+import { useRouter } from 'expo-router'
 
 const StyledStrips = styled(Stripes)
 
@@ -25,13 +26,14 @@ const discovery = {
 }
 
 export default function App() {
+  const router = useRouter()
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
     BaiJamjuree_700Bold,
   })
 
-  const [request, response, signInWithGithub] = useAuthRequest(
+  const [, response, signInWithGithub] = useAuthRequest(
     {
       clientId: '2128bdb10a5b89c8a1be',
       scopes: ['identity'],
@@ -41,19 +43,20 @@ export default function App() {
     },
     discovery,
   )
-  console.log(request) // only to commit
+
+  async function handleGithubOAuthCode(code: string) {
+    const response = await api.post('/register', { code })
+    const { token } = response.data
+    await SecureStore.setItemAsync('token', token)
+    router.push('/memories')
+  }
 
   useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params
-      api
-        .post('/register', { code })
-        .then((response) => {
-          const { token } = response.data
-          SecureStore.setItemAsync('token', token)
-        })
-        .catch((error) => console.error(error))
+      handleGithubOAuthCode(code)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response])
 
   if (!fontsLoaded) {
