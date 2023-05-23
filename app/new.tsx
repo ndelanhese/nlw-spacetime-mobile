@@ -69,11 +69,11 @@ export default function New() {
     >
       <View className="mt-4 flex-row items-center justify-between">
         <NlwLogo />
-        <TouchableOpacity className="h-10 w-10 items-center justify-center rounded-full bg-purple-500 ">
-          <Link href="memories" asChild>
+        <Link href="/memories" asChild>
+          <TouchableOpacity className="h-10 w-10 items-center justify-center rounded-full bg-purple-500 ">
             <Icon name="arrow-left" size={16} color="#fff" />
-          </Link>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </Link>
       </View>
       <View className="mt-6 space-y-6">
         <View className="flex-row items-center gap-2">
